@@ -1,8 +1,8 @@
 name: a-pr-checks
 
 on:
-  pull_request:
-    types: [ edited, opened, synchronize, reopened ]
+  pull_request_created:
+    types: [opened, reopened, synchronize, ready_for_review]
     branches: 
       - 'master'
       - 'main'
