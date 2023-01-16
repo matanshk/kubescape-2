@@ -63,14 +63,11 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-latest, windows-latest]
     steps:
-      - run: |
-          echo ${{ inputs.EVENT_NAME }}
 
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: recursive
-
 
       - name: Cache Go modules (Linux)
         if: matrix.os == 'ubuntu-20.04' 
@@ -121,10 +118,10 @@ jobs:
         if: matrix.os != 'windows-latest'
  
       - name: Test core pkg
-        run: go test -tags=static -v ./...
+        run: go test "-tags=static,gitenabled" -v ./...
 
       - name: Test httphandler pkg
-        run: cd httphandler && go test -tags=static -v ./...
+        run: cd httphandler && go test "-tags=static,gitenabled" -v ./...
 
       - name: Build
         env:
@@ -133,12 +130,29 @@ jobs:
           CGO_ENABLED: 1
         run: python3 --version && python3 build.py
 
-      - name: Smoke Testing
+      - name: Smoke Testing (Windows / MacOS)
         env:
-          RELEASE: ${{ inputs.RELEASE }} 
+          RELEASE: ${{ env.RELEASE }} 
           KUBESCAPE_SKIP_UPDATE_CHECK: "true"
         run: python3 smoke_testing/init.py ${PWD}/build/${{ matrix.os }}/kubescape
-        
+        if: matrix.os != 'ubuntu-20.04'
+
+      - name: Smoke Testing (Linux)
+        env:
+          RELEASE: ${{ env.RELEASE }} 
+          KUBESCAPE_SKIP_UPDATE_CHECK: "true"
+        run: python3 smoke_testing/init.py ${PWD}/build/ubuntu-latest/kubescape
+        if: matrix.os == 'ubuntu-20.04'      
+
+      - name: golangci-lint
+        if: matrix.os == 'ubuntu-20.04'      
+        continue-on-error: true
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          args: --timeout 10m --build-tags=static
+          only-new-issues: true
+
       - id: export_tests_to_env
         name: set test name
         run: |
