@@ -198,5 +198,4 @@ require (
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
-
 replace github.com/libgit2/git2go/v33 => ../git2go
