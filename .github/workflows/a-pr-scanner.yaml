@@ -1,7 +1,7 @@
 # name: a-pr-checks
 
 # on:
-#   pull_request_created:
+#   pull_request:
 #     types: [opened, reopened, synchronize, ready_for_review]
 #     branches: 
 #       - 'master'
