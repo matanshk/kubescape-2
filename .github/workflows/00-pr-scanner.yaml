@@ -11,7 +11,7 @@ name: 00-pr-scanner
   #       description: 'Client name'
   #       required: true
   #       type: string
-  
+
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
