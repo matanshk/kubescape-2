@@ -54,14 +54,14 @@ jobs:
           go-version: '1.19'
           cache: true
 
-      # - name: Scanning - Forbidden Licenses (go-licenses)
-      #   id: licenses-scan
-      #   continue-on-error: true
-      #   run: |
-      #     echo "## Installing go-licenses tool"
-      #     go install github.com/google/go-licenses@latest
-      #     echo "## Scanning for forbiden licenses ##"
-      #     go-licenses check .
+      - name: Scanning - Forbidden Licenses (go-licenses)
+        id: licenses-scan
+        continue-on-error: true
+        run: |
+          echo "## Installing go-licenses tool"
+          go install github.com/google/go-licenses@latest
+          echo "## Scanning for forbiden licenses ##"
+          go-licenses check .
 
       - name: Scanning - Credentials (GitGuardian)
         if: ${{ env.GITGUARDIAN_API_KEY }}
@@ -87,26 +87,16 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      # - name: Comment results to PR
-      #   uses: peter-evans/create-or-update-comment@v2
-      #   with:
-      #     issue-number:  ${{ github.event.pull_request.number }}
-      #     body: |
-      #       Scan results:
-      #       - License scan: ${{ steps.licenses-scan.outcome }}
-      #       - Credentials scan: ${{ steps.credentials-scan.outcome }}
-      #       - Vulnerabilities scan: ${{ steps.vulnerabilities-scan.outcome }}
-      #     reactions: 'eyes'
-
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2.3.1
+      - name: Comment results to PR
+        uses: peter-evans/create-or-update-comment@v2.1.0
         with:
-          pr_number: ${{ github.event.pull_request.number }}
-          message: |
+          issue-number:  ${{ github.event.pull_request.number }}
+          body: |
             Scan results:
+            - License scan: ${{ steps.licenses-scan.outcome }}
             - Credentials scan: ${{ steps.credentials-scan.outcome }}
             - Vulnerabilities scan: ${{ steps.vulnerabilities-scan.outcome }}
-          reactions: eyes
+          reactions: 'eyes'
 
   basic-tests:
     needs: scanners
