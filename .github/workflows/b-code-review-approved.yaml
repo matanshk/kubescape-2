@@ -1,21 +1,10 @@
-name: code_review_approved
+name: b-code_review_approved
 on:
   pull_request_review:
     types: [submitted]
     branches:
       - 'master'
       - 'main'
-
-  # pull_request:
-  #   types: [closed]
-  #   branches: [ master ]
-    
-  # push:
-  #   branches: [ master ]
-  #   paths-ignore:
-  #     # Do not run the pipeline if only Markdown files changed
-  #     - '**/**.md' ### Do not run the workflow if Mardown files changed.
-  #     - '.github/workflows/*' ### Do not run the workflow if files under path: .github/workflows/* changed.
 
 jobs:
 
@@ -70,87 +59,3 @@ jobs:
           MERGE_METHOD: "merge"
           MERGE_LABELS: ""
           UPDATE_LABELS: ""
-
-
-
-
-
-
-
-
-
-  # docker-build:
-  #   if: ${{ (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master') }} ## Trigger if the the PR merged to master branch
-  #   uses: ./.github/workflows/ks-docker-build.yaml 
-  #   with:
-  #     IMAGE_NAME: quay.io/kubescape/kubescape # ### quay.io/${{ github.repository_owner }}/kubescape
-  #     IMAGE_TAG: v2.0.${{ github.run_number }}
-  #     COMPONENT_NAME: kubescape
-  #     CGO_ENABLED: 0
-  #     GO111MODULE: ""
-  #     GO_VERSION: "1.18"
-  #     EVENT_NAME: ${{ github.event_name }} 
-  #     BUILD_PLATFORM: linux/amd64 #linux/amd64,linux/arm64
-  #     # IMAGE_TESTS: '[-
-  #     #                 "scan_nsa"
-  #     #               ]'      
-  #     IMAGE_TESTS:  '[
-  #                     "ks_microservice_ns_creation",
-  #                     "ks_microservice_on_demand",
-  #                     "ks_microservice_mitre_framework_on_demand",
-  #                     "ks_microservice_nsa_and_mitre_framework_demand",
-  #                     "ks_microservice_triggering_with_cron_job",
-  #                     "ks_microservice_update_cronjob_schedule",
-  #                     "ks_microservice_delete_cronjob",
-  #                     "ks_microservice_create_2_cronjob_mitre_and_nsa"
-  #                   ]'   
-  #     COSIGN: true
-  #   secrets: inherit
-
-  # create-release:
-  #   needs: [docker-build, binary-build]
-  #   if: ${{ contains(github.event.pull_request.labels.*.name, 'release') && always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) && !(contains (needs.*.result,'cancelled')) }} ## run only if tagged as "release"
-  #   uses: ./.github/workflows/ks-create-release.yaml
-  #   with:
-  #     RELEASE_NAME: "Release v2.0.${{ github.run_number }}"
-  #     TAG_NAME: "v2.0.${{ github.run_number }}"
-  #     DRAFT: true
-  #   secrets: inherit    
-
-  # docker-retag:
-  #   needs: [docker-build, create-release]
-  #   if: ${{ contains(github.event.pull_request.labels.*.name, 'release') && always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) && !(contains (needs.*.result,'cancelled')) }} ## run only if tagged as "release"
-  #   uses: ./.github/workflows/ks-docker-retag.yaml
-  #   with:
-  #     IMAGE_NAME: quay.io/kubescape/kubescape
-  #     IMAGE_TAG_PRERELEASE: ${{ needs.docker-build.outputs.IMAGE_TAG_PRERELEASE }}
-  #     IMAGE_TAG: "v2.0.${{ github.run_number }}"
-  #     COSIGN: true
-  #   secrets: inherit   
-
-  # trigger-helm-cicd:
-  #   if: ${{ contains(github.event.pull_request.labels.*.name, 'release') && always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) && !(contains (needs.*.result,'cancelled')) }} ## run only if tagged as "release"
-  #   needs: docker-retag #publish-artifacts
-  #   uses: ./.github/workflows/ks-trigger-helm-workflow.yaml
-  #   with:
-  #     IMAGE_TAG: v2.0.${{ github.run_number }}
-  #     COMPONENT_NAME: kubescape
-  #     HELM_E2E_TEST: true
-  #   secrets: inherit
-
-
-  # abort-on-failure-docker-build:
-  #   needs: docker-build
-  #   if: ${{ always() && (contains(needs.*.result, 'failure')) && !contains(needs.*.result, 'success') && !(contains (needs.*.result,'cancelled')) }} ## Abroat the workflow if one of the jobs failed
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: cancelling
-  #     uses: andymckay/cancel-action@0.3
-
-  # abort-on-failure-binary-build:
-  #   needs: binary-build
-  #   if: ${{ always() && (contains(needs.*.result, 'failure')) && !contains(needs.*.result, 'success') && !(contains (needs.*.result,'cancelled')) }} ## Abroat the workflow if one of the jobs failed
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: cancelling
-  #     uses: andymckay/cancel-action@0.3

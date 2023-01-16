@@ -1,4 +1,4 @@
-name: ks-binary-build
+name: 01-binary-build-and-e2e-tests
 on:
   workflow_call:
     inputs:
