@@ -86,7 +86,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Comment results to PR
-        uses: peter-evans/create-or-update-comment@v2.1.0
+        uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number:  ${{ github.event.pull_request.number }}
           body: |
