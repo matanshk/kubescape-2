@@ -35,7 +35,8 @@ concurrency:
 
 jobs:
   scanners:
-    permissions: write-all
+    permissions: 
+      issues: write
     env:
        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
