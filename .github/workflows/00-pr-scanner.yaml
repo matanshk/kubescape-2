@@ -36,7 +36,7 @@ concurrency:
 jobs:
   scanners:
     permissions: 
-      pull-requests: write|read
+      pull-requests: write
     env:
        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
