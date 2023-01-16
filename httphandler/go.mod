@@ -20,6 +20,7 @@ require (
 	k8s.io/utils v0.0.0-20221128185143-99ec85e7a448
 )
 
+
 require (
 	cloud.google.com/go/compute v1.7.0 // indirect
 	cloud.google.com/go/container v1.2.0 // indirect
