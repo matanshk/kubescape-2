@@ -7,6 +7,7 @@ go 1.19
 
 replace github.com/kubescape/kubescape/v2 => ../
 
+
 require (
 	github.com/armosec/utils-go v0.0.12
 	github.com/go-openapi/runtime v0.24.1
