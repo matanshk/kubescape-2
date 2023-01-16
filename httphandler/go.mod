@@ -1,6 +1,5 @@
 module github.com/kubescape/kubescape/v2/httphandler
 
-
 go 1.19
 
 replace github.com/kubescape/kubescape/v2 => ../
