@@ -16,9 +16,15 @@ on:
       - 'docs/*'
       - 'build/*'
       - '.github/*'
+
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
+  
 jobs:
   test:
-    uses: ./.github/workflows/00-test.yaml
+    uses: ./.github/workflows/00-pr-scanner.yaml
     with:
       release: ${{ github.ref_name}}
       client: test
