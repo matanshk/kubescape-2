@@ -85,16 +85,27 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Comment results to PR
-        uses: peter-evans/create-or-update-comment@v2
+      # - name: Comment results to PR
+      #   uses: peter-evans/create-or-update-comment@v2
+      #   with:
+      #     issue-number:  ${{ github.event.pull_request.number }}
+      #     body: |
+      #       Scan results:
+      #       - License scan: ${{ steps.licenses-scan.outcome }}
+      #       - Credentials scan: ${{ steps.credentials-scan.outcome }}
+      #       - Vulnerabilities scan: ${{ steps.vulnerabilities-scan.outcome }}
+      #     reactions: 'eyes'
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2.3.1
         with:
-          issue-number:  ${{ github.event.pull_request.number }}
-          body: |
+          pr_number: ${{ github.event.pull_request.number }}
+          message: |
             Scan results:
             - License scan: ${{ steps.licenses-scan.outcome }}
             - Credentials scan: ${{ steps.credentials-scan.outcome }}
             - Vulnerabilities scan: ${{ steps.vulnerabilities-scan.outcome }}
-          reactions: 'eyes'
+          reactions: eyes
 
   basic-tests:
     needs: scanners
