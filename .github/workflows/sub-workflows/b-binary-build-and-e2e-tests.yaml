@@ -1,4 +1,4 @@
-name: 01-binary-build-and-e2e-tests
+name: b-binary-build-and-e2e-tests
 on:
   workflow_call:
     inputs:
