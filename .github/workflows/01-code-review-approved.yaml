@@ -1,4 +1,4 @@
-name: b-code_review_approved
+name: 01-code_review_approved
 on:
   pull_request_review:
     types: [submitted]
