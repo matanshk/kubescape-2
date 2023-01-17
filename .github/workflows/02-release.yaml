@@ -1,22 +1,18 @@
-name: 01-code_review_approved
-on:
-  pull_request_review:
-    types: [submitted]
-    branches:
-      - 'master'
-      - 'main'
+name: 02-create_release
 
-concurrency:
-  group: code-review-approved
-  cancel-in-progress: true
+on:
+  push:
+    tags:
+    # - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
+    - 'v*.*.*'
+
 
 jobs:
-
   binary-build:
-    if: ${{ github.event.review.state == 'approved' && 
-            contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
-            github.event.pull_request.base.ref == 'master' }} ## run only if labeled as "trigger-integration-test" and base branch is master
-
+    if: ${{ github.ref_name  == 'master' || 
+              github.ref_name  == 'main' }}
+    #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
+    #         github.event.pull_request.base.ref == 'master' }} ## run only if labeled as "trigger-integration-test" and base branch is master
     uses: ./.github/workflows/b-binary-build-and-e2e-tests.yaml
     with:
       COMPONENT_NAME: kubescape
@@ -25,7 +21,7 @@ jobs:
       GO_VERSION: "1.19"
       EVENT_NAME: ${{ github.event_name }} 
       RELEASE: ${{ github.ref_name}}
-      CLIENT: test
+      CLIENT: release
       # BINARY_TESTS: '[
       #                 "scan_nsa"
                     # ]'
@@ -48,18 +44,68 @@ jobs:
       #               ]'
     secrets: inherit
 
-
-  merge-to-master:
-    needs: binary-build
-    if: ${{ (always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) && !(contains(needs.*.result, 'failure')) && !(contains(needs.*.result, 'cancelled'))) }}
+  retag:
+    needs: [binary-build]
     runs-on: ubuntu-latest
+    outputs:
+      NEW_TAG: ${{ steps.retag.outputs.NEW_TAG }}
+    id: retag
     steps:
-      - name: merge-to-master
-        uses: pascalgn/automerge-action@v0.15.5
-        env:
-          GITHUB_TOKEN: "${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}"
-          MERGE_COMMIT_MESSAGE: "Merge to master - PR number: {pullRequest.number}"
-          MERGE_ERROR_FAIL: "true"
-          MERGE_METHOD: "merge"
-          MERGE_LABELS: ""
-          UPDATE_LABELS: ""
+      - name: tag-calculator
+        run: | 
+          TAG="v2.23.52-rc.4654"
+          SPLITTED_TAG=
+          echo "rc tag: $TAG"
+          SPLITTED_TAG=$(echo $TAG | awk -F '-rc' '{print $1}')
+          echo "New tag: $SPLITTED_TAG"
+          echo "NEW_TAG=$SPLITTED_TAG" >> $GITHUB_OUTPUT
+
+  create-release:
+    needs: [retag]
+    uses: ./.github/workflows/c-create-release.yaml
+    with:
+      RELEASE_NAME: "Release ${{ needs.retag.outputs.NEW_TAG }}"
+      TAG_NAME: ${{ needs.retag.outputs.NEW_TAG }}
+      DRAFT: false
+    secrets: inherit    
+
+
+  # integration-test:
+  #   if: ${{ label == e2e-tests }}
+
+  # re-tag:
+  #   # if tests passed, create new tag without `rc`
+    
+  # create-release:
+  #   uses: ./.github/workflows/01-create-release.yaml
+  #   needs: test
+  #   with:
+  #     release_name: "Release ${{ github.ref_name}}"
+  #     tag: ${{ github.ref_name}}
+  #   secrets: inherit
+
+  # publish-artifacts:
+  #   uses: ./.github/workflows/02-publish-artifacts.yaml
+  #   needs: create-release
+  #   with:
+  #     upload_url: ${{ needs.create-release.outputs.upload_url }}
+  #     release: "${{ github.ref_name}}"
+  #   secrets: inherit
+       
+
+
+
+
+
+
+
+  # publish-image:
+  #   uses: ./.github/workflows/03-publish-image.yaml
+  #   needs: create-release
+  #   with:
+  #     client: "image-release"
+  #     image_name: "quay.io/${{ github.repository_owner }}/kubescape"
+  #     image_tag: "${{ github.ref_name}}"
+  #     support_platforms: true
+  #     cosign: true
+  #   secrets: inherit
