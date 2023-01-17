@@ -11,6 +11,7 @@ import (
 	"github.com/kubescape/kubescape/v2/core/cautils/getter"
 )
 
+
 func ToScanInfo(scanRequest *utilsmetav1.PostScanRequest) *cautils.ScanInfo {
 	scanInfo := defaultScanInfo()
 
