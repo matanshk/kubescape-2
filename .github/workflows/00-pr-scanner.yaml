@@ -24,7 +24,7 @@ concurrency:
   
 jobs:
   pr-scanner:
-    uses: ./.github/workflows/sub-workflows/a-pr-scanner.yaml
+    uses: ./.github/workflows/a-pr-scanner.yaml
     with:
       RELEASE: ${{ github.ref_name}}
       CLIENT: test
