@@ -35,8 +35,6 @@ concurrency:
 
 jobs:
   scanners:
-    permissions: 
-      pull-requests: write
     env:
        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -97,6 +95,7 @@ jobs:
             - Credentials scan: ${{ steps.credentials-scan.outcome }}
             - Vulnerabilities scan: ${{ steps.vulnerabilities-scan.outcome }}
           reactions: 'eyes'
+          token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
 
   basic-tests:
     needs: scanners

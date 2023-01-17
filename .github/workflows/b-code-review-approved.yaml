@@ -53,8 +53,6 @@ jobs:
     needs: binary-build
     if: ${{ (always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) && !(contains(needs.*.result, 'failure')) && !(contains(needs.*.result, 'cancelled'))) }}
     runs-on: ubuntu-latest
-    # permissions: 
-    #   pull-requests: write
     steps:
       - name: merge-to-master
         uses: pascalgn/automerge-action@v0.15.5
