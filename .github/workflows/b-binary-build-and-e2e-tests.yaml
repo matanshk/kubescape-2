@@ -155,6 +155,16 @@ jobs:
           input: ${{ inputs.BINARY_TESTS }}
 
       - uses: actions/upload-artifact@v3.1.1
+        name: Upload artifact (Linux)
+        if: matrix.os == 'ubuntu-20.04'
+        with:
+          name: kubescape-ubuntu-latest #-v2.0.${{ github.run_number }}
+          path: build/ubuntu-latest/
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v3.1.1
+        name: Upload artifact (MacOS, Win)
+        if: matrix.os != 'ubuntu-20.04'
         with:
           name: kubescape-${{ matrix.os }} #-v2.0.${{ github.run_number }}
           path: build/${{ matrix.os }}/
@@ -166,7 +176,7 @@ jobs:
   #     matrix:
   #       TEST: ${{ fromJson(needs.binary-build.outputs.TEST_NAMES) }}
   #   needs: binary-build
-  #   runs-on: ubuntu-latest
+  #   runs-on: ubuntu-20.04
   #   steps:
 
   #     - uses: actions/download-artifact@v3.0.2
