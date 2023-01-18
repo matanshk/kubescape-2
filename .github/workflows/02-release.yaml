@@ -19,47 +19,30 @@ jobs:
         with:
           SUB_STRING: "-rc"
 
-  # binary-build:
-  #   needs: [retag]
-  #   # if: ${{ github.ref_name  == 'master' || 
-  #   #           github.ref_name  == 'main' }}
-  #   #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
-  #   #         github.event.pull_request.base.ref == 'master' }} ## run only if labeled as "trigger-integration-test" and base branch is master
-  #   uses: ./.github/workflows/b-binary-build-and-e2e-tests.yaml
-  #   with:
-  #     COMPONENT_NAME: kubescape
-  #     CGO_ENABLED: 0
-  #     GO111MODULE: ""
-  #     GO_VERSION: "1.19"
-  #     EVENT_NAME: ${{ github.event_name }} 
-  #     RELEASE: ${{ github.ref_name}}
-  #     CLIENT: release
-  #     # BINARY_TESTS: '[
-  #     #                 "scan_nsa"
-  #                   # ]'
-  #     # BINARY_TESTS: '[
-  #     #                 "scan_nsa",                                                                                            
-  #     #                 "scan_mitre",                                                                                          
-  #     #                 "scan_with_exceptions",                                                                                
-  #     #                 "scan_repository",                                                                                     
-  #     #                 "scan_local_file",                                                                                     
-  #     #                 "scan_local_glob_files",                                                                               
-  #     #                 "scan_local_list_of_files",                                                                            
-  #     #                 "scan_nsa_and_submit_to_backend",                                                                      
-  #     #                 "scan_mitre_and_submit_to_backend",                                                                    
-  #     #                 "scan_local_repository_and_submit_to_backend",                                                         
-  #     #                 "scan_repository_from_url_and_submit_to_backend",                                                      
-  #     #                 "scan_with_exception_to_backend",                                                                      
-  #     #                 "scan_with_custom_framework",                                                                                                                                                               
-  #     #                 "scan_customer_configuration",                                                                         
-  #     #                 "host_scanner"
-  #     #               ]'
-  #   secrets: inherit
+  binary-build:
+    needs: [retag]
+    # if: ${{ github.ref_name  == 'master' || 
+    #           github.ref_name  == 'main' }}
+    #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
+    #         github.event.pull_request.base.ref == 'master' }} ## run only if labeled as "trigger-integration-test" and base branch is master
+    uses: ./.github/workflows/b-binary-build-and-e2e-tests.yaml
+    with:
+      COMPONENT_NAME: kubescape
+      CGO_ENABLED: 0
+      GO111MODULE: ""
+      GO_VERSION: "1.19"
+      EVENT_NAME: ${{ github.event_name }} 
+      RELEASE: ${{ github.ref_name}}
+      CLIENT: release
+      BINARY_TESTS: '[
+                      "scan_nsa"
+                    ]'
+    secrets: inherit
 
   create-release:
     permissions:
       contents: write    
-    needs: [retag] #[retag, binary-build]
+    needs: [retag, binary-build]
     uses: ./.github/workflows/c-create-release.yaml
     with:
       RELEASE_NAME: "Release ${{ needs.retag.outputs.NEW_TAG }}"
