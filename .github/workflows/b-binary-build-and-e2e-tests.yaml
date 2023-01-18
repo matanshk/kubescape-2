@@ -175,7 +175,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/download-artifact@v3.1.2
+      - uses: actions/download-artifact@v3.0.2
         id: download-artifact
         with:
           name: kubescape-ubuntu-latest-v2.0.${{ github.run_number }}
