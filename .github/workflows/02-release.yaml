@@ -39,7 +39,7 @@ jobs:
 
 
   binary-build:
-    needs: [tag validator]
+    needs: [retag]
     if: ${{ github.ref_name  == 'master' || 
               github.ref_name  == 'main' }}
     #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
