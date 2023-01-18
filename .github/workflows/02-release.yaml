@@ -2,6 +2,9 @@ name: 02-create_release
 
 on:
   push:
+    branches:
+      - main
+      - master
     tags:
     # - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
     - 'v*.*.*'
@@ -40,8 +43,8 @@ jobs:
 
   binary-build:
     needs: [retag]
-    if: ${{ github.ref_name  == 'master' || 
-              github.ref_name  == 'main' }}
+    # if: ${{ github.ref_name  == 'master' || 
+    #           github.ref_name  == 'main' }}
     #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
     #         github.event.pull_request.base.ref == 'master' }} ## run only if labeled as "trigger-integration-test" and base branch is master
     uses: ./.github/workflows/b-binary-build-and-e2e-tests.yaml
@@ -97,7 +100,7 @@ jobs:
   create-release:
     permissions:
       contents: write    
-    needs: [retag]
+    needs: [binary-build]
     uses: ./.github/workflows/c-create-release.yaml
     with:
       RELEASE_NAME: "Release ${{ needs.retag.outputs.NEW_TAG }}"
