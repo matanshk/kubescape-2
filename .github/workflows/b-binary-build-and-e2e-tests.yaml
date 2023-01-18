@@ -158,7 +158,7 @@ jobs:
         name: Upload artifact (Linux)
         if: matrix.os == 'ubuntu-20.04'
         with:
-          name: kubescape-ubuntu-latest #-v2.0.${{ github.run_number }}
+          name: kubescape-ubuntu-latest
           path: build/ubuntu-latest/
           if-no-files-found: error
 
@@ -166,7 +166,7 @@ jobs:
         name: Upload artifact (MacOS, Win)
         if: matrix.os != 'ubuntu-20.04'
         with:
-          name: kubescape-${{ matrix.os }} #-v2.0.${{ github.run_number }}
+          name: kubescape-${{ matrix.os }}
           path: build/${{ matrix.os }}/
           if-no-files-found: error
 
@@ -182,7 +182,7 @@ jobs:
       - uses: actions/download-artifact@v3.0.2
         id: download-artifact
         with:
-          name: kubescape-ubuntu-20.04 #-v2.0.${{ github.run_number }}
+          name: kubescape-ubuntu-latest
           path: "~"
 
       - name: chmod +x
