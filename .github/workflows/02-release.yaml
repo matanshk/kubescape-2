@@ -12,7 +12,7 @@ jobs:
     outputs:
       NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
     env:
-      ORIGINAL_TAG="${{ github.ref_name }}"
+      ORIGINAL_TAG: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - name: tag validator
