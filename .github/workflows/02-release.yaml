@@ -3,45 +3,21 @@ name: 02-create_release
 on:
   push:
     tags:
-    # - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
-    - 'v*.*.*'
-
+    - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
+    # - 'v*.*.*'
 
 jobs:
   retag:
     outputs:
       NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
-    env:
-      ORIGINAL_TAG: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - id: tag-calcilator
+      - id: tag-calculator
         uses: ./.github/actions/tag-action
-
-      # - name: tag validator
-      #   run: |
-      #     SUB='-rc'
-      #     if [[ "${{ env.ORIGINAL_TAG }}" == *"$SUB"* ]]; then
-      #         echo "Release candidate tag found."
-      #     else
-      #         echo "Release candidate tag not found."
-      #         exit 1
-      #     fi
-
-      # - name: tag-calculator
-      #   id: tag-calculator     
-      #   run: | 
-      #     NEW_TAG=
-      #     echo "Original tag: ${{ env.ORIGINAL_TAG }}"
-      #     NEW_TAG=$(echo ${{ env.ORIGINAL_TAG }} | awk -F '-rc' '{print $1}')
-      #     echo "New tag: $NEW_TAG"
-      #     echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
-
-      # - name: echo new tag
-      #   run: echo ${{ steps.tag-calculator.outputs.NEW_TAG }}
-
+        with:
+          SUB_STRING: "-rc"
 
   binary-build:
     needs: [retag]
