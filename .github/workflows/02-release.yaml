@@ -8,8 +8,7 @@ on:
 
 
 jobs:
-  tag-validator:
-    id: retag     
+  retag:
     outputs:
       NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
     env:
@@ -27,6 +26,7 @@ jobs:
           fi
 
       - name: tag-calculator
+        id: tag-calculator     
         run: | 
           NEW_TAG=
           echo "Original tag: ${{ env.ORIGINAL_TAG }}"
