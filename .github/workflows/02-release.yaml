@@ -34,9 +34,6 @@ jobs:
       EVENT_NAME: ${{ github.event_name }} 
       RELEASE: ${{ github.ref_name}}
       CLIENT: release
-      BINARY_TESTS: '[
-                      "scan_nsa"
-                    ]'
     secrets: inherit
 
   create-release:
