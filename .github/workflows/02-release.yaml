@@ -95,6 +95,8 @@ jobs:
   #       run: echo ${{ steps.retag.outputs.NEW_TAG }}
 
   create-release:
+    permissions:
+      contents: write    
     needs: [retag]
     uses: ./.github/workflows/c-create-release.yaml
     with:
