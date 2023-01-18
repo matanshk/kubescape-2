@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: tag-calcilator
-        uses: actions/tag-action@v1
+        uses: ./.github/actions/tag-action
+
       # - name: tag validator
       #   run: |
       #     SUB='-rc'
