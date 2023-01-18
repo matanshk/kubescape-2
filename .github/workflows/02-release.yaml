@@ -31,7 +31,6 @@ jobs:
       CGO_ENABLED: 0
       GO111MODULE: ""
       GO_VERSION: "1.19"
-      EVENT_NAME: ${{ github.event_name }} 
       RELEASE: ${{ github.ref_name}}
       CLIENT: release
     secrets: inherit
@@ -43,7 +42,7 @@ jobs:
     uses: ./.github/workflows/c-create-release.yaml
     with:
       RELEASE_NAME: "Release ${{ needs.retag.outputs.NEW_TAG }}"
-      TAG_NAME: ${{ needs.retag.outputs.NEW_TAG }}
+      TAG: ${{ needs.retag.outputs.NEW_TAG }}
       DRAFT: false
     secrets: inherit    
 
