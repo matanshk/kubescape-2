@@ -29,12 +29,6 @@ jobs:
         with:
           path: .
 
-      - name: ls -la after dl
-        run: ls -la
-      
-      - name: ls -laR after dl
-        run: ls -laR
-
       - name: artifacts rename
         run: |
 
@@ -50,12 +44,6 @@ jobs:
 
           mv ./kubescape-$WINDOWS_OS/kubescape ./kubescape-$WINDOWS_OS/kubescape-$WINDOWS_OS-${{ inputs.TAG }}
           mv ./kubescape-$WINDOWS_OS/kubescape.sha256 ./kubescape-$WINDOWS_OS/kubescape-$WINDOWS_OS-${{ inputs.TAG }}.sha256
-
-      - name: ls -la after RENAME
-        run: ls -la
-      
-      - name: ls -laR after RENAME
-        run: ls -laR
 
       - name: Release
         uses: softprops/action-gh-release@v1
