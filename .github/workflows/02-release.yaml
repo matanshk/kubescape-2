@@ -2,9 +2,6 @@ name: 02-create_release
 
 on:
   push:
-    branches:
-      - main
-      - master
     tags:
     # - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
     - 'v*.*.*'
