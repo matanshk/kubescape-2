@@ -8,7 +8,37 @@ on:
 
 
 jobs:
+  tag-validator:
+    id: retag     
+    outputs:
+      NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
+    env:
+      ORIGINAL_TAG=${{ github.ref_name }}
+    runs-on: ubuntu-latest
+      - name: tag validator
+        run: |
+          SUB='rc'
+          if [[ "${{ env.ORIGINAL_TAG }}" == *"$SUB"* ]]; then
+              echo "Release candidate tag found."
+          else
+              echo "Release candidate tag not found."
+              exit 1
+          fi
+
+      - name: tag-calculator
+        run: | 
+          NEW_TAG=
+          echo "Original tag: ${{ env.ORIGINAL_TAG }}"
+          NEW_TAG=$(echo ${{ env.ORIGINAL_TAG }} | awk -F '-rc' '{print $1}')
+          echo "New tag: $NEW_TAG"
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: echo new tag
+        run: echo ${{ steps.tag-calculator.outputs.NEW_TAG }}
+
+
   binary-build:
+    needs: [tag validator]
     if: ${{ github.ref_name  == 'master' || 
               github.ref_name  == 'main' }}
     #         contains( github.event.pull_request.labels.*.name, 'trigger-integration-test') && 
@@ -44,24 +74,24 @@ jobs:
       #               ]'
     secrets: inherit
 
-  retag:
-    needs: [binary-build]
-    runs-on: ubuntu-latest
-    outputs:
-      NEW_TAG: ${{ steps.retag.outputs.NEW_TAG }}
-    id: retag
-    steps:
-      - name: tag-calculator
-        run: | 
-          TAG=${{  github.ref_name }}
-          SPLITTED_TAG=
-          echo "Original tag: $TAG"
-          SPLITTED_TAG=$(echo $TAG | awk -F '-rc' '{print $1}')
-          echo "New tag: $SPLITTED_TAG"
-          echo "NEW_TAG=$SPLITTED_TAG" >> $GITHUB_OUTPUT
+  # retag:
+  #   needs: [binary-build]
+  #   runs-on: ubuntu-latest
+  #   # outputs:
+  #   #   NEW_TAG: ${{ steps.retag.outputs.NEW_TAG }}
+  #   # id: retag
+  #   steps:
+  #     - name: tag-calculator
+  #       run: | 
+  #         TAG=${{  github.ref_name }}
+  #         SPLITTED_TAG=
+  #         echo "Original tag: $TAG"
+  #         SPLITTED_TAG=$(echo $TAG | awk -F '-rc' '{print $1}')
+  #         echo "New tag: $SPLITTED_TAG"
+  #         echo "NEW_TAG=$SPLITTED_TAG" >> $GITHUB_OUTPUT
 
-      - name: echo new tag
-        run: echo ${{ steps.retag.outputs.NEW_TAG }}
+  #     - name: echo new tag
+  #       run: echo ${{ steps.retag.outputs.NEW_TAG }}
 
   create-release:
     needs: [retag]
