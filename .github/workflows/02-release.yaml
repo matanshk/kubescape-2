@@ -53,12 +53,15 @@ jobs:
     steps:
       - name: tag-calculator
         run: | 
-          TAG="v2.23.52-rc.4654"
+          TAG=${{  github.ref_name }}
           SPLITTED_TAG=
-          echo "rc tag: $TAG"
+          echo "Original tag: $TAG"
           SPLITTED_TAG=$(echo $TAG | awk -F '-rc' '{print $1}')
           echo "New tag: $SPLITTED_TAG"
           echo "NEW_TAG=$SPLITTED_TAG" >> $GITHUB_OUTPUT
+
+      - name: echo new tag
+        run: echo ${{ steps.retag.outputs.NEW_TAG }}
 
   create-release:
     needs: [retag]
