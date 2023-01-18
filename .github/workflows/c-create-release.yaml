@@ -68,9 +68,9 @@ jobs:
           fail_on_unmatched_files: true
           prerelease: false
           files: |
-            ./kubescape-ubuntu-latest-${{ inputs.TAG }}/*
-            ./kubescape-macos-latest-${{ inputs.TAG }}/*
-            ./kubescape-windows-latest-${{ inputs.TAG }}/*
+            ./kubescape-ubuntu-latest/*
+            ./kubescape-macos-latest/*
+            ./kubescape-windows-latest/*
             
       - name: Digest
         uses: MCJack123/ghaction-generate-release-hashes@v1
