@@ -3,7 +3,7 @@ name: 02-create_release
 on:
   push:
     tags:
-    - 'v*.*.*-rc.*' # Comment out since the re-tagging process is not yet implemented
+    - 'v*.*.*-rc.*'
     # - 'v*.*.*'
 
 jobs:
@@ -56,25 +56,6 @@ jobs:
       #               ]'
     secrets: inherit
 
-  # retag:
-  #   needs: [binary-build]
-  #   runs-on: ubuntu-latest
-  #   # outputs:
-  #   #   NEW_TAG: ${{ steps.retag.outputs.NEW_TAG }}
-  #   # id: retag
-  #   steps:
-  #     - name: tag-calculator
-  #       run: | 
-  #         TAG=${{  github.ref_name }}
-  #         SPLITTED_TAG=
-  #         echo "Original tag: $TAG"
-  #         SPLITTED_TAG=$(echo $TAG | awk -F '-rc' '{print $1}')
-  #         echo "New tag: $SPLITTED_TAG"
-  #         echo "NEW_TAG=$SPLITTED_TAG" >> $GITHUB_OUTPUT
-
-  #     - name: echo new tag
-  #       run: echo ${{ steps.retag.outputs.NEW_TAG }}
-
   create-release:
     permissions:
       contents: write    
@@ -85,35 +66,6 @@ jobs:
       TAG_NAME: ${{ needs.retag.outputs.NEW_TAG }}
       DRAFT: false
     secrets: inherit    
-
-
-  # integration-test:
-  #   if: ${{ label == e2e-tests }}
-
-  # re-tag:
-  #   # if tests passed, create new tag without `rc`
-    
-  # create-release:
-  #   uses: ./.github/workflows/01-create-release.yaml
-  #   needs: test
-  #   with:
-  #     release_name: "Release ${{ github.ref_name}}"
-  #     tag: ${{ github.ref_name}}
-  #   secrets: inherit
-
-  # publish-artifacts:
-  #   uses: ./.github/workflows/02-publish-artifacts.yaml
-  #   needs: create-release
-  #   with:
-  #     upload_url: ${{ needs.create-release.outputs.upload_url }}
-  #     release: "${{ github.ref_name}}"
-  #   secrets: inherit
-       
-
-
-
-
-
 
 
   # publish-image:
