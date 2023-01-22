@@ -43,13 +43,13 @@ jobs:
     secrets: inherit    
 
 
-  # publish-image:
-  #   uses: ./.github/workflows/03-publish-image.yaml
-  #   needs: create-release
-  #   with:
-  #     client: "image-release"
-  #     image_name: "quay.io/${{ github.repository_owner }}/kubescape"
-  #     image_tag: "${{ github.ref_name}}"
-  #     support_platforms: true
-  #     cosign: true
-  #   secrets: inherit
+  publish-image:
+    uses: ./.github/workflows/03-publish-image.yaml
+    needs: create-release
+    with:
+      client: "image-release"
+      image_name: "quay.io/${{ github.repository_owner }}/kubescape"
+      image_tag: ${{ needs.retag.outputs.NEW_TAG }}
+      support_platforms: true
+      cosign: true
+    secrets: inherit
