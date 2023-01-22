@@ -8,14 +8,11 @@ on:
 
 jobs:
   retag:
-    if: ${{ github.event.base_ref  == 'refs/heads/master' ||  github.event.base_ref  == 'refs/heads/main' }}
     outputs:
       NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - run: echo ${{ github.event.base_ref }}
 
       - id: tag-calculator
         uses: ./.github/actions/tag-action
