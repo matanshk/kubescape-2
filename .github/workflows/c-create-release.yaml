@@ -60,8 +60,3 @@ jobs:
             ./kubescape-macos-latest/*
             ./kubescape-windows-latest/*
             
-      - name: Digest
-        uses: MCJack123/ghaction-generate-release-hashes@v1
-        with:
-          hash-type: sha1
-          file-name: kubescape-release-digests
