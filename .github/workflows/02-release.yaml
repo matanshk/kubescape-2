@@ -8,16 +8,12 @@ on:
 
 jobs:
   retag:
+    if: ${{ github.event.base_ref  == 'refs/heads/master' ||  github.event.base_ref  == 'refs/heads/main' }}
     outputs:
       NEW_TAG: ${{ steps.tag-calculator.outputs.NEW_TAG }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
 
       - id: tag-calculator
         uses: ./.github/actions/tag-action
@@ -26,8 +22,6 @@ jobs:
 
   binary-build:
     needs: [retag]
-    # if: ${{ github.ref_name  == 'master' || 
-    #           github.ref_name  == 'main' }}
     uses: ./.github/workflows/b-binary-build-and-e2e-tests.yaml
     with:
       COMPONENT_NAME: kubescape
