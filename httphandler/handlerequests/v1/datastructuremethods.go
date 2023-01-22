@@ -43,6 +43,7 @@ func ToScanInfo(scanRequest *utilsmetav1.PostScanRequest) *cautils.ScanInfo {
 		if keepLocal := cautils.NewBoolPtr(scanRequest.KeepLocal); keepLocal.Get() != nil {
 			scanInfo.Local = *keepLocal.Get() // Load files from cache (this will prevent kubescape fom downloading the artifacts every time)
 		}
+		
 	}
 
 	// submit
