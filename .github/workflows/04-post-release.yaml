@@ -1,4 +1,4 @@
-name: 03-create_release_digests
+name: 04-create_release_digests
 
 on:
   release:
